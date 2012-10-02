@@ -1,0 +1,58 @@
+#!/bin/bash
+# Original Author: Remigijus Jarmalavičius <remigijus@jarmalavicius.lt>
+# Original Author: Vytautas Povilaitis <php-checker@vytux.lt>
+# Rewritten by: Boris Guéry <guery.b@gmail.com>
+# https://github.com/borisguery/git-php-syntax-checker
+
+# Add uncommon php extensions here
+PHP_EXTENSIONS="(.php$|.phtml$)"
+
+ROOT_DIR="$(pwd)/"
+LIST=$(git diff-index --cached --name-status HEAD | grep  -E "^(A|C|M|R)")
+ERRORS_BUFFER=""
+TEXT_DEFAULT="\\033[0;39m"
+TEXT_INFO="\\033[1;32m"
+TEXT_ERROR="\\033[1;31m"
+TEXT_UNDERLINE="\\0033[4m"
+TEXT_BOLD="\\0033[1m"
+
+for file in $LIST
+do
+    case "$(echo "$file" | cut -f1)" in
+        A) FILE_ACTION="added"
+            ;;
+        C) FILE_ACTION="copied"
+            ;;
+        M) FILE_ACTION="modified"
+            ;;
+        R) FILE_ACTION="renamed"
+            ;;
+    esac
+    ACTUAL_FILENAME=$(echo "$file" | cut -f2)
+    EXTENSION=$(echo "$ACTUAL_FILENAME" | grep -E $PHP_EXTENSIONS) 
+    if [ "$EXTENSION" != "" ]; then
+        echo -e "$TEXT_INFO" "Checking $FILE_ACTION file: $ACTUAL_FILENAME" "$TEXT_INFO"
+        ERRORS=$(php -l $ROOT_DIR$ACTUAL_FILENAME 2>&1 | grep "^PHP Parse error")
+        if [ "$ERRORS" != "" ]; then
+            if [ "$ERRORS_BUFFER" != "" ]; then
+                ERRORS_BUFFER="$ERRORS_BUFFER\n\t$ERRORS"
+            else
+                ERRORS_BUFFER="$ERRORS\t"
+            fi
+            echo -e "$TEXT_ERROR" "Syntax errors found in file: $ACTUAL_FILENAME" "$TEXT_DEFAULT"
+        else
+            echo -e "$TEXT_INFO" "Syntax Ok" "$TEXT_DEFAULT"
+        fi
+    fi
+done
+if [ "$ERRORS_BUFFER" != "" ]; then
+    echo
+    echo -e "$TEXT_ERROR" "These errors were found in try-to-commit files: " "$TEXT_DEFAULT"
+    echo -e "\t$ERRORS_BUFFER"
+    echo
+    echo -e "$TEXT_ERROR" "Can't commit, fix errors first." "$TEXT_DEFAULT"
+    exit 1
+else
+    exit 0
+fi
+
