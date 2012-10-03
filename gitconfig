@@ -1,0 +1,22 @@
+[core]
+	autocrlf = input
+	excludesfile = /usr/share/git-core/gitignore
+	fileMode = false
+
+#[i18n]
+#	commitEncoding = iso-8859-15
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+	interactive = auto
+	ui = auto
+[alias]
+	st = status
+	ci = commit
+	co = checkout
+	df = diff
+	dfc = diff --cached
+	br = branch --verbose
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
+  up = pull --rebase
