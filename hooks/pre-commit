@@ -33,6 +33,7 @@ do
     if [ "$EXTENSION" != "" ]; then
         echo -e "$TEXT_INFO" "Checking $FILE_ACTION file: $ACTUAL_FILENAME" "$TEXT_INFO"
         ERRORS=$(php -l $ROOT_DIR$ACTUAL_FILENAME 2>&1 | grep "^PHP Parse error")
+        ERRORS=$(echo $ERRORS | sed -e "s:$ROOT_DIR::g")
         if [ "$ERRORS" != "" ]; then
             if [ "$ERRORS_BUFFER" != "" ]; then
                 ERRORS_BUFFER="$ERRORS_BUFFER\n\t$ERRORS"
