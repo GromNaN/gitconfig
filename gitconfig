@@ -22,3 +22,5 @@
   up = pull --rebase
 [push]
 	default = current
+[branch]
+	autosetuprebase = always
