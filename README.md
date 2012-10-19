@@ -1,5 +1,5 @@
-Git Configuration for development serveurs
-==========================================
+Git Configuration for development servers
+=========================================
 
 
 Installation
