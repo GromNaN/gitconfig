@@ -19,7 +19,8 @@
 	dfc = diff --cached
 	br = branch --verbose
 	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
-  up = pull --rebase
+	up = pull --rebase
+	puf = push --force-with-lease
 [push]
 	default = current
 [branch]
